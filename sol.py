@@ -1,6 +1,8 @@
 from PIL import Image, ImageDraw
 
-image = Image.new('RGBA', (800, 800), (0, 0, 0, 0))
+XS, Y0 = 1000, 800
+
+image = Image.new('RGBA', (XS, Y0), (0, 0, 0, 0))
 draw = ImageDraw.Draw(image)
 
 mem = {}
@@ -10,16 +12,16 @@ for rline in iter(raw_input, '====='):
     line = rline.split(';')
 
     pin, t, xy = (int(line[0]), int(line[1]),
-                  tuple([150 + float(a.replace(',', '.')) * 30 for a in line[2:]]))
+                  tuple([200 + float(a.replace(',', '.')) * 30 for a in line[2:]]))
 
     x, y = xy
 
     if t == 1:
         mcu[pin] = xy
-        draw.ellipse(((x - 2, y - 2), (x + 2, y + 2)), fill='red', outline='red')
+        draw.ellipse(((x - 2, Y0 - y - 2), (x + 2, Y0 - y + 2)), fill='red', outline='red')
     else:
         mem[pin] = xy
-        draw.ellipse(((x - 2, y - 2), (x + 2, y + 2)), fill='blue', outline='blue')
+        draw.ellipse(((x - 2, Y0 - y - 2), (x + 2, Y0 - y + 2)), fill='blue', outline='blue')
 
 
 for i, rline in enumerate(iter(raw_input, '#####')):
@@ -29,8 +31,8 @@ for i, rline in enumerate(iter(raw_input, '#####')):
     n1x, n1y = mcu[n1]
     n2x, n2y = mem[n2]
 
-    draw.line(((n1x, n1y), (n1x, n2y)), fill='green', width=1)
-    draw.line(((n1x, n2y), (n2x, n2y)), fill='green', width=1)
+    draw.line(((n1x, Y0 - n1y), (n1x, Y0 - n2y)), fill='green', width=1)
+    draw.line(((n1x, Y0 - n2y), (n2x, Y0 - n2y)), fill='green', width=1)
 
     if i > 100:
         break
