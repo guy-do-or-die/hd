@@ -1,11 +1,13 @@
-from PIL import Image, ImageDraw
+from PIL import Image, ImageDraw, ImageOps
+
 from collections import OrderedDict
 from itertools import islice
 from functools import partial
+
 import operator as op
 import random
 
-XS, Y0 = 1000, 800
+XS, Y0 = 800, 800
 
 
 def read_boards():
@@ -15,7 +17,7 @@ def read_boards():
         line = rline.split(';')
 
         pin, t, xy = (int(line[0]), int(line[1]),
-                      tuple([200 + float(a.replace(',', '.')) * 30 for a in line[2:]]))
+                      tuple([180 + float(a.replace(',', '.')) * 30 for a in line[2:]]))
 
         if t == 1:
             mcu[pin] = xy
@@ -102,8 +104,9 @@ def draw_groups(groups, mcu, mem):
         for conn in group:
             draw_conn(drw, conn)
 
-        del drw
+        img = ImageOps.flip(img)
         img.save('%s.png' % n)
+        del drw
 
 
 def main():
@@ -121,9 +124,10 @@ def main():
     for f in islice(sconns, 100):
         draw_conn(drw, conns[f])
 
-    del drw
+    img = ImageOps.flip(img)
     img.show()
     img.save('test.png')
+    del drw
 
 
 if __name__ == '__main__':
